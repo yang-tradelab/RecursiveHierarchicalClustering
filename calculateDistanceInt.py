@@ -132,7 +132,7 @@ def calDist(inputPath, sidsPath, outputPath, tmpPrefix='', idfMapPath=None):
                                                  sidsPath.split('sid_')[0])))
     # read the ngram file, generate a node list
     lineNum = 1
-    sids = pickle.load(open(sidsPath))
+    sids = pickle.load(open(sidsPath,'rb'))
 
     fromSids = set(sids[0])
     # in principle the toSids should be all sids
@@ -142,7 +142,7 @@ def calDist(inputPath, sidsPath, outputPath, tmpPrefix='', idfMapPath=None):
 
     # get the idfMap, if provided
     if (idfMapPath):
-        idfMap = pickle.load(open(idfMapPath))
+        idfMap = pickle.load(open(idfMapPath,'rb'))
     else:
         idfMap = None
 
@@ -152,7 +152,7 @@ def calDist(inputPath, sidsPath, outputPath, tmpPrefix='', idfMapPath=None):
     if (len(fromSids) < MIN_SLICE * THREAD_NUM):
         step = MIN_SLICE
     else:
-        step = len(fromSids) / THREAD_NUM + 1
+        step = int(len(fromSids) / THREAD_NUM) + 1
 
     print(('[LOG]: %s preprocessing takes %.4fs' %
           (datetime.datetime.now(), time.time() - startTime)))
@@ -212,10 +212,10 @@ def partialMatrix(sids, idfMap, ngramPath, tmpPrefix, outputPath,
     if (total < MIN_SERVER * len(servers)):
         step = MIN_SERVER
     else:
-        step = total / len(servers) + 1
+        step = int(total / len(servers)) + 1
     processes = []
     start = 0
-    pickle.dump(idfMap, open('%s%sidf.pkl' % (outputPath, tmpPrefix), 'w'))
+    pickle.dump(idfMap, open('%s%sidf.pkl' % (outputPath, tmpPrefix), 'wb'))
 
     # if number of tasks is small enough, run it locally
     if total < MIN_SERVER:
@@ -225,7 +225,7 @@ def partialMatrix(sids, idfMap, ngramPath, tmpPrefix, outputPath,
         if (start >= total):
             break
         pickle.dump([sids[start:start+step], sids], open('%s%ssid_%s.pkl' %
-                     (outputPath, tmpPrefix, server), 'w'))
+                     (outputPath, tmpPrefix, server), 'wb'))
         print(('[LOG]: starting in %s for %s' % (server, tmpPrefix)))
         if server == 'localhost':
             calDist(ngramPath, '%s%ssid_%s.pkl' %

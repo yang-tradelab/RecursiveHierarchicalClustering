@@ -151,11 +151,12 @@ def calDist(inputPath, sidsPath, outputPath, tmpPrefix='', idfMapPath=None):
     if (len(fromSids) < MIN_SLICE * THREAD_NUM):
         step = MIN_SLICE
     else:
-        step = len(fromSids) / THREAD_NUM + 1
+        step = int(len(fromSids) / THREAD_NUM) + 1
 
     tid = 0
     threads = []
     start = 0
+
     while start < len(fromSids):
         tid += 1
         thread = myThread(tid, '%s%sdist' % (outputPath, tmpPrefix),
@@ -193,14 +194,16 @@ def partialMatrix(sids, idfMap, ngramPath, tmpPrefix, outputPath,
     if not realSid:
         sids = [x + 1 for x in sids]
     total = len(sids)
+    
     if (total < MIN_SERVER * len(servers)):
         step = MIN_SERVER
     else:
-        step = total / len(servers) + 1
+        step = int(total / len(servers)) + 1
     processes = []
     start = 0
     pickle.dump(idfMap, open('%s%sidf.pkl' % (outputPath, tmpPrefix), 'wb'))
     for server in servers:
+
         if (start >= total):
             break
         pickle.dump([sids[start:start+step], sids], open('%s%ssid_%s.pkl' %
