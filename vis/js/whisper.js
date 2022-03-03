@@ -6,71 +6,71 @@ Array.prototype.min = function() {
     return Math.min.apply(null, this);
 };
 
-function resetMaxDepth() {
-    // find out the style of the current graph
-    var style = $('.vis-style-group .btn-primary').attr('data');
-    // find out the depth of the current graph
-    var depth = $('div#' + style + "-chart").data('depth');
-    // find out the current maxDepth of the graph
-    var maxD = $('div#' + style + "-chart").data('maxD');
+function resetMaxDepth () {
+  // find out the style of the current graph
+  var style = $('.vis-style-group .btn-primary').attr('data');
+  // find out the depth of the current graph
+  var depth = $('div#' + style + "-chart").data('depth');
+  // find out the current maxDepth of the graph
+  var maxD = $('div#' + style + "-chart").data('maxD');
 
-    // if depth is three, then max depth cannot be less than three
-    $('.max-depth-group button').each(function() {
-        console.log($(this).attr('data'), depth, maxD);
-        if ($(this).attr('data') > depth) {
-            $(this).removeClass('disabled');
-        } else {
-            $(this).addClass('disabled');
-        }
-        if ($(this).attr('data') == maxD) {
-            $(this).addClass('btn-primary');
-        } else {
-            $(this).removeClass('btn-primary');
+  // if depth is three, then max depth cannot be less than three
+  $('.max-depth-group button').each(function(){
+    console.log($(this).attr('data'), depth, maxD);
+    if ($(this).attr('data') > depth){
+      $(this).removeClass('disabled');
+    }else{
+      $(this).addClass('disabled');
+    }
+      if ($(this).attr('data') == maxD){
+        $(this).addClass('btn-primary');
+      }else{
+        $(this).removeClass('btn-primary');
 
-        }
-    });
+      }
+  });
 }
 
-function maxDepth(maxD, style) {
-    var style = typeof style !== 'undefined' ? style : $('.vis-style-group .btn-primary').attr('data');
-    console.log(style);
-    var svg;
+function maxDepth(maxD, style){
+  var style = typeof style !== 'undefined' ?  style : $('.vis-style-group .btn-primary').attr('data');
+  console.log(style);
+  var svg;
     $('div#' + style + "-chart").data('maxD', maxD);
 
-    if (style == 'packed') {
+    if (style == 'packed'){
 
-        svg = d3.select("#packed-chart svg");
+      svg = d3.select("#packed-chart svg");
 
-        var circle = svg
-            .selectAll("circle")
-            .style("visibility", function(d) {
-                return d.depth > maxD ? "hidden" : "visible";
-            });
-        colorPacked();
+      var circle = svg
+          .selectAll("circle")
+          .style("visibility", function(d){
+              return d.depth > maxD ? "hidden": "visible";
+          });
+      colorPacked();
     }
-    if (style == 'icicle') {
+    if (style == 'icicle'){
 
-        svg = d3.select("#icicle-chart svg");
-        var rect = svg.selectAll("rect")
-            .style("visibility", function(d) {
-                return d.depth > maxD ? "hidden" : "visible";
-            });
+      svg = d3.select("#icicle-chart svg");
+      var rect = svg.selectAll("rect")
+          .style("visibility", function(d){
+              return d.depth > maxD ? "hidden": "visible";
+          });
 
     }
 
-    if (style == 'sunburst') {
+    if (style == 'sunburst'){
 
-        svg = d3.select("#sunburst-chart svg");
-        var text = svg.selectAll("path")
-            .style("visibility", function(d) {
-                return d.depth > maxD ? "hidden" : "visible";
-            });
+      svg = d3.select("#sunburst-chart svg");
+      var text = svg.selectAll("path")
+          .style("visibility", function(d){
+              return d.depth > maxD ? "hidden": "visible";
+          });
     }
 
 }
 
 function colorPacked(style) {
-    var style = typeof style !== 'undefined' ? style : $('.color-entry-group .btn-primary').attr('data');
+    var style = typeof style !== 'undefined' ?  style : $('.color-entry-group .btn-primary').attr('data');
     var svg = d3.select("#packed-chart svg");
     var depth = $('#packed-chart').data('depth');
 
@@ -91,12 +91,12 @@ function colorPacked(style) {
             var gini = d.info ? d.info.gini ? d.info.gini : 0 : 0;
             var modu = d.info ? d.info.sweetspot ? d.info.sweetspot : 0 : 0;
             modu = (modu * 9 < 1) ? modu * 9 : 1;
-            var dist = d.info ? d.info.intraDistance ? d.info.intraDistance / d.info.interDistance : 1 : 1;
+            var dist = d.info ? d.info.intraDistance ? d.info.intraDistance / d.info.interDistance : 1:1;
             dist = 1 - dist;
             // console.log(modu, color(modu));
             if (style == 'default' || d.depth != (depth + 1)) {
                 return (d.children && d.depth != maxD) ? colorG(d.depth) : 'white';
-            } else if (style == 'modu') {
+            }else if(style == 'modu'){
                 return (d.info && d.info.sweetspot && d.children) ? d3.rgb(color(modu)).darker(-1 + d.depth) : 'white';
             }
             return d3.rgb(color(dist)).darker(-1 + d.depth);
@@ -107,7 +107,7 @@ function colorPacked(style) {
 
 
 function colorIcicle(style, transition) {
-    transition = typeof transition !== 'undefined' ? transition : 0;
+    transition = typeof transition !== 'undefined' ?  transition : 0;
     // get the current depth
     var depth = $('#icicle-chart').data('depth');
     var colorG = d3.scale.linear()
@@ -130,11 +130,11 @@ function colorIcicle(style, transition) {
             var info = (d.children ? d : d.parent).info;
             var modu = d.info ? d.info.sweetspot ? d.info.sweetspot : 0 : 0;
             modu = (modu * 9 < 1) ? modu * 9 : 1;
-            var dist = d.info ? d.info.intraDistance ? d.info.intraDistance / d.info.interDistance : 1 : 1;
+            var dist = d.info ? d.info.intraDistance ? d.info.intraDistance / d.info.interDistance : 1:1;
             dist = 1 - dist;
             if (style == 'default' || d.depth != (depth + 1)) {
                 return colorG(d.depth);
-            } else if (style == 'modu') {
+            }else if (style == 'modu'){
                 return d3.rgb(color(modu));
             }
             return d3.rgb(color(dist));
@@ -142,7 +142,7 @@ function colorIcicle(style, transition) {
 }
 
 function colorSunburst(style, transition) {
-    transition = typeof transition !== 'undefined' ? transition : 0;
+    transition = typeof transition !== 'undefined' ?  transition : 0;
     // get the current depth
     var depth = $('#sunburst-chart').data('depth');
     var colorG = d3.scale.linear()
@@ -162,49 +162,49 @@ function colorSunburst(style, transition) {
         .transition()
         .delay(transition)
         .style("fill", function(d) {
-            // console.log(d.depth, depth);
+          // console.log(d.depth, depth);
             var info = (d.children ? d : d.parent).info;
             var modu = d.info ? d.info.sweetspot ? d.info.sweetspot : 0 : 0;
             modu = (modu * 9 < 1) ? modu * 9 : 1;
-            var dist = d.info ? d.info.intraDistance ? d.info.intraDistance / d.info.interDistance : 1 : 1;
+            var dist = d.info ? d.info.intraDistance ? d.info.intraDistance / d.info.interDistance : 1:1;
             dist = 1 - dist;
 
             if (style == 'default' || d.depth != (depth + 1)) {
                 return colorG(d.depth);
-            } else if (style == 'modu') {
+            }else if (style == 'modu'){
                 return d3.rgb(color(modu));
             }
             return d3.rgb(color(dist));
         });
 }
 
-function fillTreemap(d) {
-    d = d.noChild ? d : d.parent;
+function fillTreemap(d){
+  d = d.noChild?d:d.parent;
 
-    var colorG = d3.scale.linear()
+  var colorG = d3.scale.linear()
         .domain([-1, 5])
         .range(["hsl(152,90%,90%)", "hsl(228,60%,20%)"])
         .interpolate(d3.interpolateHcl);
 
-    // the palette used for encoding scores
-    var color = d3.scale.linear()
-        .domain([0, 0.2, 0.4, 0.6, 1])
-        .range(["#637E84", "#92B4A5", "#EDC224", "#F9AC21", "#ED4E25"]);
+  // the palette used for encoding scores
+  var color = d3.scale.linear()
+      .domain([0, 0.2, 0.4, 0.6, 1])
+      .range(["#637E84", "#92B4A5", "#EDC224", "#F9AC21", "#ED4E25"]);
 
-    var style = $("#treemap-chart").data('color');
-    var gini = d.info ? d.info.gini ? d.info.gini : 0 : 0;
-    var modu = d.info ? d.info.sweetspot ? d.info.sweetspot : 0 : 0;
-    modu = (modu * 9 < 1) ? modu * 9 : 1;
-    var dist = d.info ? d.info.intraDistance ? d.info.intraDistance / d.info.interDistance : 1 : 1;
-    dist = 1 - dist;
-    var info = d.info ? d.info : null;
-    if (style == 'default') {
-        // console.log(d.depth);
-        return colorG(d.depth);
-    } else if (style == 'modu') {
-        return color(modu);
-    }
-    return color(dist);
+  var style = $("#treemap-chart").data('color');
+  var gini = d.info ? d.info.gini ? d.info.gini : 0 : 0;
+  var modu = d.info ? d.info.sweetspot ? d.info.sweetspot : 0 : 0;
+  modu = (modu * 9 < 1) ? modu * 9 : 1;
+  var dist = d.info ? d.info.intraDistance ? d.info.intraDistance / d.info.interDistance : 1:1;
+  dist = 1 - dist;
+  var info = d.info?d.info:null;
+  if (style == 'default') {
+      // console.log(d.depth);
+      return colorG(d.depth);
+  }else if (style == 'modu'){
+    return color(modu);
+  }
+  return color(dist);
 
 }
 
@@ -269,16 +269,16 @@ $(function() {
         $(this).siblings().removeClass('btn-primary');
         $(this).addClass('btn-primary');
         resetMaxDepth();
-        if ($(this).attr('data') == 'treemap') {
-            $('.max-depth-group button').addClass('disabled');
+        if ($(this).attr('data') == 'treemap'){
+          $('.max-depth-group button').addClass('disabled');
         }
 
     });
 
-    $('#controller-helper').click(function() {
-        $(this).find('.glyphicon').toggleClass('hidden');
-        $('#controller .panel-body').toggle();
-        $('#helper').toggleClass('expand');
+    $('#controller-helper').click(function(){
+      $(this).find('.glyphicon').toggleClass('hidden');
+      $('#controller .panel-body').toggle();
+      $('#helper').toggleClass('expand');
     })
 
     $('.color-entry-group button').click(function() {
@@ -291,8 +291,8 @@ $(function() {
         $(this).addClass('btn-primary');
     });
 
-    $('.max-depth-group button').click(function() {
-        if ($(this).hasClass('disabled')) { return false; }
+    $('.max-depth-group button').click(function(){
+        if ($(this).hasClass('disabled')){return false;}
         maxDepth($(this).attr('data'));
         $(this).siblings().removeClass('btn-primary');
         $(this).addClass('btn-primary');
@@ -485,8 +485,8 @@ $(function() {
                 .style("background", "hsl(152,90%,90%)")
                 .on("dblclick", function() {
                     // if the current visulization style is packed circle
-                    if ($('.vis-style-group .btn-primary').attr('data') == 'packed') {
-                        zoom(root);
+                    if ($('.vis-style-group .btn-primary').attr('data') == 'packed'){
+                    zoom(root);
 
                     }
                 });
@@ -544,7 +544,7 @@ $(function() {
             colorPacked('default');
 
         });
-
+      
         d3.select(self.frameElement).style("height", diameter + "px");
 
     }
@@ -609,12 +609,12 @@ $(function() {
                 .text(function(d) {
                     return d.name + "\n" + formatNumber(d.value);
                 });
-            colorSunburst('default');
+              colorSunburst('default');
         });
 
         function click(d) {
-            $('#sunburst-chart').data('depth', d.depth);
-            resetMaxDepth();
+        $('#sunburst-chart').data('depth', d.depth);
+                resetMaxDepth();
 
             svg.transition()
                 .duration(750)
@@ -678,51 +678,51 @@ $(function() {
         detail.prepend($('<div class="summary"><span><b>Cluster ID:</b> ' + d.info.id + '<b> | Number of Users:</b> ' + d.info.size + ' users</span></div>'));
 
         // handle add cluster label, should be unversal
-        // clickLink = $('<a class="label-btn btn-comment btn btn-primary" href="javascript:;">add label</a>');
-        // clickLink.click(function(event) {
-        //     var label = prompt("label this cluster", "");
-        //     if (label) {
-        //         if (d.info.tolabel) {
-        //             // we have lebeled a new cluster
-        //             totalLabeled += 1;
-        //             renderCounter();
-        //         }
-        //         // TODO: need to change this, propogate name change to all visulizations
-        //         d.name = label;
-        //         // $.post("/send", {
-        //         //     username: username,
-        //         //     cid: d.info.id,
-        //         //     label: label,
-        //         //     file: jsonFile
-        //         // });
-        //         labelLog[labelLog.length] = [Math.floor(Date.now() / 1000), d.info.id, label];
+        clickLink = $('<a class="label-btn btn-comment btn btn-primary" href="javascript:;">add label</a>');
+        clickLink.click(function(event) {
+            var label = prompt("label this cluster", "");
+            if (label) {
+                if (d.info.tolabel) {
+                    // we have lebeled a new cluster
+                    totalLabeled += 1;
+                    renderCounter();
+                }
+                // TODO: need to change this, propogate name change to all visulizations
+                d.name = label;
+                // $.post("/send", {
+                //     username: username,
+                //     cid: d.info.id,
+                //     label: label,
+                //     file: jsonFile
+                // });
+                labelLog[labelLog.length] = [Math.floor(Date.now() / 1000), d.info.id, label];
 
-        //         text.text(function(d) {
-        //             return d.name;
-        //         });
-        //         d.info.tolabel = false;
-        //         // circle.style("fill", function(d) { 
-        //         //   if ('info' in d && 'tolabel' in d.info && !d.info.tolabel){
-        //         //     return d.children ? color(d.depth) : null;
-        //         //   }else{
-        //         //     return d.children ? colorG(d.depth) : null;
-        //         //   }
-        //         // });
-        //         detail.hide();
-        //         // TODO: this is packed circle specific, need to change that
-        //         // zoom(d.parent);
-        //     }
-        //     event.stopPropagation();
-        // });
+                text.text(function(d) {
+                    return d.name;
+                });
+                d.info.tolabel = false;
+                // circle.style("fill", function(d) { 
+                //   if ('info' in d && 'tolabel' in d.info && !d.info.tolabel){
+                //     return d.children ? color(d.depth) : null;
+                //   }else{
+                //     return d.children ? colorG(d.depth) : null;
+                //   }
+                // });
+                detail.hide();
+                // TODO: this is packed circle specific, need to change that
+                // zoom(d.parent);
+            }
+            event.stopPropagation();
+        });
         // console.log(d.info.sweetspot);
         // display the 
         // detail.append($('<p>'+JSON.stringify(d.info, null, 2)+"</p>")); 
-        // detail.find('.summary').append(clickLink);
-        // if (d.name) {
-        //     clickLink.attr('data-toggle', 'tooltip');
-        //     clickLink.attr('title', d.name);
-        //     clickLink.tooltip();
-        // }
+        detail.find('.summary').append(clickLink);
+        if (d.name) {
+            clickLink.attr('data-toggle', 'tooltip');
+            clickLink.attr('title', d.name);
+            clickLink.tooltip();
+        }
         // detail.append($('<h3>Features</h3>'));
         // display action patterns, should be universal
         features = $('<table class="table table-condensed features"></table>');
@@ -828,7 +828,7 @@ $(function() {
                 .data(parts)
                 .enter().append("rect")
                 .attr("x", function(d) {
-                    // console.log(d);
+                  // console.log(d);
                     return x(d.x);
                 })
                 .attr("y", function(d) {
@@ -838,7 +838,7 @@ $(function() {
                     return x(d.dx) > 2 ? x(d.dx) - 2 : 0;
                 })
                 .attr("height", function(d) {
-                    // console.log(d.dy);
+                  // console.log(d.dy);
                     return y(d.dy) > 2 ? y(d.dy) - 2 : 0;
                 })
                 .on("click", function(d) {
@@ -859,7 +859,7 @@ $(function() {
                 .text(function(d) {
                     return d.name;
                 });
-            colorIcicle("default");
+              colorIcicle("default");
         });
 
         function clicked(d) {
@@ -867,7 +867,7 @@ $(function() {
             x.domain([d.x, d.x + d.dx]);
             y.domain([d.y, 1]).range([d.y ? 20 : 0, height]);
             $('#icicle-chart').data('depth', d.depth);
-            resetMaxDepth();
+                resetMaxDepth();
 
             rect.transition()
                 .duration(750)
@@ -887,11 +887,11 @@ $(function() {
                 });
 
             text.transition()
-                .duration(750)
-                .attr("dy", ".35em")
-                .attr("transform", function(d) {
-                    return "translate(" + x(d.x + d.dx / 2) + "," + y(d.y + d.dy / 2) + ")rotate(90)";
-                });
+              .duration(750)
+              .attr("dy", ".35em")
+              .attr("transform", function(d) {
+                  return "translate(" + x(d.x + d.dx / 2) + "," + y(d.y + d.dy / 2) + ")rotate(90)";
+              });
             $('#icicle-chart').data('depth', d.depth);
 
             colorIcicle($('.color-entry-group .btn-primary').attr('data'), 750);
@@ -1045,9 +1045,9 @@ $(function() {
 
                 g.selectAll(".child")
                     .data(function(d) {
-                        if (!d._children) {
-                            d = $.extend({}, d);
-                            d.noChild = true;
+                        if (!d._children){
+                          d = $.extend({}, d);
+                          d.noChild = true;
                         }
                         return d._children || [d];
                     })
