@@ -18,15 +18,10 @@ import sys
 import numpy as np
 import recursiveHierarchicalClustering as rhc
 
-inPath = sys.argv[1]
-sid_ngram = sys.argv[2]
-outPath = sys.argv[3]
 
 # display 24 bins in visulization
 binCount = 24
 
-data = json.load(open(inPath))
-sid_seq = rhc.getSidNgramMap(sid_ngram)
 
 
 def allUser(tree):
@@ -71,8 +66,8 @@ def getJsonChildren(tree, sid_seq, clusterId):
         return None, clusterId
 
     subTrees = []
-    allSids = allUser(tree)
-    sidsAll = [allUser(subTree) for subTree in tree[1]]
+    allSids = allUser(tree)  # all the users in the tree
+    sidsAll = [allUser(subTree) for subTree in tree[1]]  # [subusers]
 
     for tidx in range(len(tree[1])):
         subTree = tree[1][tidx]
@@ -150,4 +145,26 @@ def dumpLabels(treeData, sid_seq, outFile):
                'children': getJsonChildren(treeData, sid_seq, 1)[0]},
               open(outFile, 'w'))
 
-dumpLabels(data, sid_seq, outPath)
+
+if __name__ == "__main__":
+    '''
+    arguments
+
+    arg1: path to the json file generated from RHC
+        e.g. 'outpath/result.json'
+    arg2: path to a file containing the different ngram count mapping
+        e.g. 'input.txt'
+    arg3: output path of the json file used for visulization
+        e.g. 'vis/vis.json'
+    '''
+    inPath = sys.argv[1]
+    sid_ngram = sys.argv[2]
+    outPath = sys.argv[3]
+
+    data = json.load(open(inPath))
+    sid_seq = rhc.getSidNgramMap(sid_ngram)
+
+
+    dumpLabels(data, sid_seq, outPath)
+
+
